@@ -15,8 +15,9 @@
   },
   "dependencies": {
     "firebase": "^4.8.1",
+    "uuid": "^3.1.0",
     "vue": "^2.5.2",
-    "vue-material": "^0.8.1",
+    "vue-material": "^1.0.0-beta-7",
     "vue-moment": "^3.1.0",
     "vue-router": "^3.0.1",
     "vuefire": "^1.4.5",
