@@ -4,7 +4,7 @@ let config = {
   authDomain: 'seraweb-a1070.firebaseapp.com',
   databaseURL: 'https://seraweb-a1070.firebaseio.com',
   projectId: 'seraweb-a1070',
-  storageBucket: 'seraweb-a1070.appspot.co',
+  storageBucket: 'seraweb-a1070.appspot.com',
   messagingSenderId: '796844217901'
 }
 const FirebaseApp = Firebase.initializeApp(config)

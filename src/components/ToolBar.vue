@@ -2,14 +2,14 @@
   <header>
     <md-toolbar>
       <img src="../assets/seraWeb.svg"/>
-      <h1 class="md-title"><router-link to="/">SeraWeb</router-link></h1>
+      <h1 class="md-title"><router-link to="/">Q's</router-link></h1>
       <div class="md-toolbar-section-end">
         <md-button class="md-icon-button">
-          <md-icon>
-            <a href="https://github.com/po3rin/SeraWeb">
+          <a href="https://github.com/po3rin/SeraWeb">
+            <md-icon>
               <img src="./../assets/github.svg">
-            </a>
-          </md-icon>
+            </md-icon>
+          </a>
         </md-button>
       </div>
     </md-toolbar>

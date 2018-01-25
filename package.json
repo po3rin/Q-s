@@ -1,5 +1,5 @@
 {
-  "name": "seraku-web-app",
+  "name": "Real-Time-Presentation",
   "version": "1.0.0",
   "description": "created by Vue.js + Vuex + Firebase",
   "author": "中村弘武 <abctail30@gmail.com>",
@@ -15,6 +15,8 @@
   },
   "dependencies": {
     "firebase": "^4.8.1",
+    "moment": "^2.20.1",
+    "pug-html-loader": "^1.1.5",
     "uuid": "^3.1.0",
     "vue": "^2.5.2",
     "vue-material": "^1.0.0-beta-7",
@@ -42,7 +44,7 @@
     "chromedriver": "^2.27.2",
     "copy-webpack-plugin": "^4.0.1",
     "cross-spawn": "^5.0.1",
-    "css-loader": "^0.28.0",
+    "css-loader": "^0.28.8",
     "eslint": "^3.19.0",
     "eslint-config-standard": "^10.2.1",
     "eslint-friendly-formatter": "^3.0.0",
@@ -73,7 +75,7 @@
     "url-loader": "^0.5.8",
     "vue-jest": "^1.0.2",
     "vue-loader": "^13.3.0",
-    "vue-style-loader": "^3.0.1",
+    "vue-style-loader": "^3.0.3",
     "vue-template-compiler": "^2.5.2",
     "webpack": "^3.6.0",
     "webpack-bundle-analyzer": "^2.9.0",

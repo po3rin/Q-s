@@ -6,23 +6,11 @@
 </template>
 
 <script>
-import FirebaseApp from './firebase/firebase.js'
 import ToolBar from './components/ToolBar.vue'
 export default {
   name: 'app',
   components: {
     ToolBar
-  },
-  created () {
-    FirebaseApp.auth().onAuthStateChanged(user => {
-      if (user) {
-        // User is signed in.
-        console.log('is login.')
-      } else {
-        // No user is signed in.
-        console.log('No user is signed in.')
-      }
-    })
   }
 }
 </script>
