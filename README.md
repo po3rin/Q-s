@@ -1,6 +1,7 @@
-# seraku-web-app
+# Q's
 
-> created by Vue.js + Vuex + Firebase
+> Real Time Presentation
+> Vue.js + Firebase
 
 ## Build Setup
 
