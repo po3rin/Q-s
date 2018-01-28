@@ -7,20 +7,22 @@
           h1 Q’s
           h2 距離が縮まるプレゼンを
           section.left_box_description
-            h3 聞き手をおいてけぼりにすることはもうありません。匿名チャットで質問を受け付けたり、「待って！」ボタンでプレゼンスピードを調整できます。登録不要で共有ルームを作成できます。
-          md-button.md-raised.md-primary(@click="handleDialog") はじめる
+            h3 聞き手をおいてけぼりにすることはもうありません。匿名チャットで質問を受け付けたり、「待って！」ボタンでプレゼンスピードを調整できます。もちろん登録は不要です。
+          md-button.md-raised.md-primary(@click="handleDialog")
+            h3 はじめる
       .right_box
         img.right_box_img(src="../assets/screenShot.png")
     md-dialog(:md-active.sync="showDialog")
       md-dialog-title Q’s
-      md-tabs(md-dynamic-heigh)
+      md-tabs(md-alignment="centered")
         md-tab(md-label="聞き手として参加" @click="flag = 'join'" @change="joinValidate")
           p 参加するルーム名を入れてください
           md-field(:class="checkJoinEmpty")
             label Room Name
             md-input(v-model="joinRoomName" required)
             span.md-error {{ validateMessage }}
-        md-tab(md-label="プレゼンターとしてルーム作成" @click="flag = 'make'" @change="makeValidate")
+          small.red_text ルームのデータ保存期間は1日です。
+        md-tab(md-label="ルーム作成" @click="flag = 'make'" @change="makeValidate")
           p 作成するルーム名を入れてください
           md-field(:class="checkMakeEmpty")
             label Room Name
@@ -115,7 +117,7 @@ export default {
   }
   main {
     display: flex;
-    padding: 0 18vw;
+    padding: 24px 18vw;
     height: calc(80vh);
   }
   .left_box, .right_box {
@@ -155,15 +157,17 @@ export default {
   }
   .red_text {
     color: #ff5252;
+    display: block;
+    padding: 24px 0;
   }
   @media (max-width: 1600px) {
     main {
-      padding: 0 11vw;
+      padding: 24px 11vw;
     }
   }
   @media (max-width: 980px) {
     main {
-      padding: 0 3vw;
+      padding: 24px 3vw;
     }
   }
   @media (max-width: 700px) {
