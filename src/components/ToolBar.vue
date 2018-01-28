@@ -1,20 +1,15 @@
-<template>
-  <header>
-    <md-toolbar>
-      <img src="../assets/seraWeb.svg"/>
-      <h1 class="md-title"><router-link to="/">Q's</router-link></h1>
-      <div class="md-toolbar-section-end">
-        <md-button class="md-icon-button">
-          <a href="https://github.com/po3rin/SeraWeb">
-            <md-icon>
-              <img src="./../assets/github.svg">
-            </md-icon>
-          </a>
-        </md-button>
-      </div>
-    </md-toolbar>
-  </header>
-
+<template lang="pug">
+  header
+    md-toolbar
+      router-link(to="/")
+        img(src="../assets/seraWeb.svg")
+      router-link(to="/")
+        h1.md-title Q's
+      .md-toolbar-section-end
+        md-button.md-icon-button
+          a(href="https://github.com/po3rin/Q-s")
+            md-icon
+              img(src="./../assets/github.svg")
 </template>
 
 <script>
@@ -41,5 +36,8 @@ export default {
   }
   a:hover {
     text-decoration: none;
+  }
+  .md-toolbar {
+    z-index: 100;
   }
 </style>

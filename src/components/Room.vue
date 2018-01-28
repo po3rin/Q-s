@@ -6,7 +6,7 @@
           md-icon thumb_up
         p {{ ref.good }}
         md-button.md-fab.md-accent(@click="stop")
-          md-icon pause
+          md-icon pan_tool
         p {{ ref.stop }}
       .box_post
         transition-group.md-triple-line.box_post_feed(name="list" tag="md-list")
@@ -21,17 +21,35 @@
               label Post question!
               md-input(v-model="text")
             md-button.md-raised.md-primary(@click="post") 投稿
+      .box_notice
+        p.notice_text 「待って！」がおされました。
 </template>
 <script>
 import FirebaseApp from './../firebase/firebase.js'
-let Ref = FirebaseApp.database().ref('presentation')
+const Ref = FirebaseApp.database().ref('presentation')
+let flag = false
 const scrollBottom = () => {
   const obj = document.getElementsByClassName('box_post_feed')[0]
   obj.scrollTop = obj.scrollHeight
 }
+const showNotice = () => {
+  const obj = document.getElementsByClassName('box_notice')[0]
+  obj.style.opacity = 0.7
+}
+const invisibleNotice = () => {
+  const obj = document.getElementsByClassName('box_notice')[0]
+  obj.style.opacity = 0
+}
 Ref.child('post').on('value', () => {
-  console.log('qq')
   setTimeout(scrollBottom, 10)
+})
+Ref.child('stop').on('value', () => {
+  if (!flag) {
+    flag = true
+  } else {
+    showNotice()
+    setTimeout(invisibleNotice, 2000)
+  }
 })
 export default {
   data () {
@@ -61,7 +79,6 @@ export default {
     post: function () {
       Ref.child('post').push(this.text)
       this.text = null
-      setTimeout(scrollBottom, 10)
     }
   }
 }
@@ -93,7 +110,7 @@ export default {
   height: calc(100vh - 220px);
 }
 .box_post_text {
-  font-size: 1.2rem;
+  font-size: 1rem;
 }
 .box_post_name {
   color: gray;
@@ -105,8 +122,30 @@ export default {
 .list-enter-active, .list-leave-active {
   transition: all 1s;
 }
-.list-enter, .list-leave-to /* .list-leave-active for below version 2.1.8 */ {
+.list-enter, .list-leave-to {
   opacity: 0;
   transform: translateX(30px);
+}
+.box_notice {
+  align-items: center;
+  background: black;
+  display: flex;
+  height: 68px;
+  justify-content: center;
+  opacity: 0;
+  position: fixed;
+  top: 64px;
+  width: 100%;
+  z-index: 5;
+  transition: all 1s;
+}
+.notice_text {
+  color: white;
+  font-size: 1.1rem;
+}
+@media (max-width:480px) {
+  .box_post {
+    padding: 24px 0 24px 0;
+  }
 }
 </style>

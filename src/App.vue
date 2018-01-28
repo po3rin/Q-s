@@ -23,10 +23,13 @@ export default {
   text-align: center;
   color: #2c3e50;
 }
-h1{
+h1 {
   font-size: 2.0rem;
 }
-h2{
-  font-size: 1rem;
+h2 {
+  font-size: 1.4rem;
+}
+h3 {
+  font-size: .9rem;
 }
 </style>
