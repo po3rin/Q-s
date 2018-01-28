@@ -7,7 +7,7 @@
           h1 Q’s
           h2 距離が縮まるプレゼンを
           section.left_box_description
-            h3 聞き手をおいてけぼりにすることはもうありません。匿名チャットで質問を受け付けたり、「待って！」ボタンでプレゼンスピードを調整できます。
+            h3 聞き手をおいてけぼりにすることはもうありません。匿名チャットで質問を受け付けたり、「待って！」ボタンでプレゼンスピードを調整できます。登録不要で共有ルームを作成できます。
           md-button.md-raised.md-primary(@click="handleDialog") はじめる
       .right_box
         img.right_box_img(src="../assets/screenShot.png")
