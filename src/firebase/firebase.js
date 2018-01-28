@@ -1,11 +1,11 @@
 import Firebase from 'firebase'
 let config = {
-  apiKey: 'AIzaSyDnnZXHf7NoCSqmePfaIWYS3CWTjcHFj5s',
-  authDomain: 'seraweb-a1070.firebaseapp.com',
-  databaseURL: 'https://seraweb-a1070.firebaseio.com',
-  projectId: 'seraweb-a1070',
-  storageBucket: 'seraweb-a1070.appspot.com',
-  messagingSenderId: '796844217901'
+  apiKey: 'AIzaSyB70Y11A5-dL2a0aNLSVres7JEKYAfR7ZM',
+  authDomain: 'realtimepresentation.firebaseapp.com',
+  databaseURL: 'https://realtimepresentation.firebaseio.com',
+  projectId: 'realtimepresentation',
+  storageBucket: 'realtimepresentation.appspot.com',
+  messagingSenderId: '473866063351'
 }
 const FirebaseApp = Firebase.initializeApp(config)
 export default FirebaseApp

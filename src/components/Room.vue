@@ -26,59 +26,73 @@
 </template>
 <script>
 import FirebaseApp from './../firebase/firebase.js'
-const Ref = FirebaseApp.database().ref('presentation')
-let flag = false
-const scrollBottom = () => {
-  const obj = document.getElementsByClassName('box_post_feed')[0]
-  obj.scrollTop = obj.scrollHeight
-}
-const showNotice = () => {
-  const obj = document.getElementsByClassName('box_notice')[0]
-  obj.style.opacity = 0.7
-}
-const invisibleNotice = () => {
-  const obj = document.getElementsByClassName('box_notice')[0]
-  obj.style.opacity = 0
-}
-Ref.child('post').on('value', () => {
-  setTimeout(scrollBottom, 10)
-})
-Ref.child('stop').on('value', () => {
-  if (!flag) {
-    flag = true
-  } else {
-    showNotice()
-    setTimeout(invisibleNotice, 2000)
-  }
-})
+const db = FirebaseApp.database()
 export default {
   data () {
     return {
       required: null,
       text: null,
-      hasMessages: false
+      hasMessages: false,
+      roomName: this.$route.params.name
     }
   },
-  firebase: {
-    ref: {
-      source: Ref,
-      asObject: true
+  firebase: function () {
+    return {
+      ref: {
+        source: db.ref(`room/${this.roomName}`),
+        asObject: true
+      }
     }
+  },
+  created () {
+    if (!this.ref.post) {
+      this.$firebaseRefs.ref.child('post').push(`ルーム「${this.roomName}」作成されました`)
+      this.$firebaseRefs.ref.child('good').transaction(currentValue => {
+        return 0
+      })
+      this.$firebaseRefs.ref.child('stop').transaction(currentValue => {
+        return 0
+      })
+    }
+    let flag = false
+    this.$firebaseRefs.ref.child('post').on('value', () => {
+      setTimeout(this.scrollBottom, 10)
+    })
+    this.$firebaseRefs.ref.child('stop').on('value', () => {
+      if (!flag) {
+        flag = true
+      } else {
+        this.showNotice()
+        setTimeout(this.invisibleNotice, 2000)
+      }
+    })
   },
   methods: {
     good: function () {
-      Ref.child('good').transaction(currentValue => {
+      this.$firebaseRefs.ref.child('good').transaction(currentValue => {
         return (currentValue || 0) + 1
       })
     },
     stop: function () {
-      Ref.child('stop').transaction(currentValue => {
+      this.$firebaseRefs.ref.child('stop').transaction(currentValue => {
         return (currentValue || 0) + 1
       })
     },
     post: function () {
-      Ref.child('post').push(this.text)
+      this.$firebaseRefs.ref.child('post').push(this.text)
       this.text = null
+    },
+    scrollBottom: () => {
+      const obj = document.getElementsByClassName('box_post_feed')[0]
+      obj.scrollTop = obj.scrollHeight
+    },
+    showNotice: () => {
+      const obj = document.getElementsByClassName('box_notice')[0]
+      obj.style.opacity = 0.7
+    },
+    invisibleNotice: () => {
+      const obj = document.getElementsByClassName('box_notice')[0]
+      obj.style.opacity = 0
     }
   }
 }

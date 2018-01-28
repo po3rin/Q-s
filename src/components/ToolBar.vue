@@ -4,7 +4,7 @@
       router-link(to="/")
         img(src="../assets/seraWeb.svg")
       router-link(to="/")
-        h1.md-title Q's
+        h1.md-title Q’s
       .md-toolbar-section-end
         md-button.md-icon-button
           a(href="https://github.com/po3rin/Q-s")

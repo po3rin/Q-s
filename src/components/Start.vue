@@ -4,44 +4,115 @@
       .left_box
         .left_box_wrapper
           img.left_box_img(src="../assets/seraWeb.svg")
-          h1 Q's
-          h2 プレゼンターと繋がろう
+          h1 Q’s
+          h2 距離が縮まるプレゼンを
           section.left_box_description
-            h3 プレゼンターに匿名で発言や質問しながら理解度を共有できるプレゼン支援サービスです。登録不要でチャットルームを作成できます。
-          md-button.md-raised.md-primary(@click="active = true") はじめる
-          p.error_text(v-if="roomError") 存在しないルーム名です。
+            h3 聞き手をおいてけぼりにすることはもうありません。匿名チャットで質問を受け付けたり、「待って！」ボタンでプレゼンスピードを調整できます。
+          md-button.md-raised.md-primary(@click="handleDialog") はじめる
       .right_box
-       img.right_box_img(src="../assets/screenShot.png")
-    md-dialog-prompt(
-      :md-active.sync="active"
-      v-model="value"
-      md-title="ルーム名を入れてください"
-      md-input-maxlength="30"
-      md-input-placeholder="Type room's name..."
-      md-confirm-text="Done"
-      @md-confirm="onConfirm")
+        img.right_box_img(src="../assets/screenShot.png")
+    md-dialog(:md-active.sync="showDialog")
+      md-dialog-title Q’s
+      md-tabs(md-dynamic-heigh)
+        md-tab(md-label="聞き手として参加" @click="flag = 'join'" @change="joinValidate")
+          p 参加するルーム名を入れてください
+          md-field(:class="checkJoinEmpty")
+            label Room Name
+            md-input(v-model="joinRoomName" required)
+            span.md-error {{ validateMessage }}
+        md-tab(md-label="プレゼンターとしてルーム作成" @click="flag = 'make'" @change="makeValidate")
+          p 作成するルーム名を入れてください
+          md-field(:class="checkMakeEmpty")
+            label Room Name
+            md-input(v-model="makeRoomName" required)
+            span.md-error {{ validateMessage }}
+          small.red_text ルームのデータ保存期間は1日です。
+      md-dialog-actions
+        md-button.md-primary(@click="showDialog = false") CANCEL
+        md-button.md-primary(@click="check") OK
 </template>
 
 <script>
+import FirebaseApp from './../firebase/firebase.js'
+const db = FirebaseApp.database()
 export default {
   data: () => ({
-    active: false,
-    value: null,
-    roomError: null
+    showDialog: false,
+    makeError: false,
+    joinError: false,
+    makeRoomName: null,
+    joinRoomName: null,
+    validateMessage: null,
+    flag: 'join'
   }),
-  methods: {
-    onConfirm () {
-      if (this.value === 'Seraku0215') {
-        this.$router.push({ name: 'Room' })
-      } else {
-        this.roomError = true
+  firebase: function () {
+    return {
+      ref: {
+        source: db.ref(`room/`),
+        asObject: true
       }
+    }
+  },
+  computed: {
+    checkJoinEmpty () {
+      return {
+        'md-invalid': this.joinError
+      }
+    },
+    checkMakeEmpty () {
+      return {
+        'md-invalid': this.makeError
+      }
+    }
+  },
+  methods: {
+    handleDialog () {
+      this.flag = 'join'
+      this.showDialog = true
+    },
+    joinValidate () {
+      if (!this.joinRoomName) {
+        this.validateMessage = '入力してください'
+        this.joinError = true
+      } else {
+        this.joinError = false
+      }
+    },
+    makeValidate () {
+      if (!this.makeRoomName) {
+        this.validateMessage = '入力してください'
+        this.makeError = true
+      } else {
+        this.makeError = false
+      }
+    },
+    check () {
+      if (this.flag === 'join' && this.joinRoomName) {
+        this.joinRoom()
+      }
+      if (this.flag === 'make' && this.makeRoomName) {
+        this.makeRoom()
+      }
+    },
+    joinRoom () {
+      if (this.ref[this.joinRoomName]) {
+        this.$router.push({ path: `Room/${this.joinRoomName}` })
+      } else {
+        this.validateMessage = '存在しないルーム名です'
+        this.joinError = true
+      }
+    },
+    makeRoom () {
+      this.$router.push({ path: `Room/${this.makeRoomName}` })
     }
   }
 }
 </script>
 
 <style scoped>
+  .md-tab {
+    padding: 36px;
+  }
   main {
     display: flex;
     padding: 0 18vw;
@@ -82,7 +153,7 @@ export default {
   a:hover {
     text-decoration: none;
   }
-  .error_text {
+  .red_text {
     color: #ff5252;
   }
   @media (max-width: 1600px) {
