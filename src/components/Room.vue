@@ -22,7 +22,7 @@
             md-field
               label Post question!
               md-input(v-model="text")
-            md-button.md-raised.md-primary(@click="post") 投稿
+            md-button.md-raised.md-primary(@click="post") {{ status }}
       .box_notice
         p.notice_text 「待って！」がおされました。
       md-dialog(:md-active.sync="showDialog")
@@ -33,9 +33,10 @@
             md-file(v-model="file")
         md-dialog-actions
           md-button.md-primary(@click="showDialog = false") CANCEL
-          md-button.md-primary(@click="storeFile") OK
+          md-button.md-primary(@click="showDialog = false") OK
 </template>
 <script>
+import { mapGetters } from 'vuex'
 import FirebaseApp from './../firebase/firebase.js'
 const db = FirebaseApp.database()
 export default {
@@ -48,6 +49,11 @@ export default {
       showDialog: false,
       roomName: this.$route.params.name
     }
+  },
+  computed: {
+    ...mapGetters([
+      'status'
+    ])
   },
   firebase: function () {
     return {
@@ -88,15 +94,6 @@ export default {
       obj.style.opacity = 0
     },
     init: function () {
-      if (!this.ref.post) {
-        this.$firebaseRefs.ref.child('post').push(`ルーム「${this.roomName}」作成されました`)
-        this.$firebaseRefs.ref.child('good').transaction(currentValue => {
-          return 0
-        })
-        this.$firebaseRefs.ref.child('stop').transaction(currentValue => {
-          return 0
-        })
-      }
       let flag = false
       this.$firebaseRefs.ref.child('post').on('value', () => {
         setTimeout(this.scrollBottom, 10)

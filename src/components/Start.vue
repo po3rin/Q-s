@@ -4,7 +4,7 @@
       .left_box
         .left_box_wrapper
           img.left_box_img(src="../assets/seraWeb.svg")
-          h1 Q’s
+          h1 Q’s (beta)
           h2 距離が縮まるプレゼンを
           section.left_box_description
             h3 聞き手をおいてけぼりにすることはもうありません。匿名チャットで質問を受け付けたり、「待って！」ボタンでプレゼンスピードを調整できます。もちろん登録は不要です。
@@ -15,36 +15,53 @@
     md-dialog(:md-active.sync="showDialog")
       md-dialog-title Q’s
       md-tabs(md-alignment="centered")
-        md-tab(md-label="聞き手として参加" @click="flag = 'join'" @change="joinValidate")
+
+        md-tab(md-label="聞き手として入室" @click="flag = 'join'" @change="joinValidate")
           p 参加するルーム名を入れてください
           md-field(:class="checkJoinEmpty")
             label Room Name
             md-input(v-model="joinRoomName" required)
-            span.md-error {{ validateMessage }}
-          small.red_text ルームのデータ保存期間は1日です。
+
+        md-tab(md-label="プレゼンターとして入室" @click="flag = 'auth'" @change="authValidate")
+          p 入室するルーム名を入れてください
+          md-field(:class="checkAuthEmpty")
+            label Room Name
+            md-input(v-model="authRoomName" required)
+          p パスワードを入力してください
+          md-field(:class="checkAuthEmpty")
+            label password
+            md-input(v-model="authPassword" type="password" required)
+
         md-tab(md-label="ルーム作成" @click="flag = 'make'" @change="makeValidate")
           p 作成するルーム名を入れてください
           md-field(:class="checkMakeEmpty")
             label Room Name
             md-input(v-model="makeRoomName" required)
-            span.md-error {{ validateMessage }}
-          small.red_text ルームのデータ保存期間は1日です。
+          p パスワードを入力してください
+          md-field(:class="checkMakeEmpty")
+            label password
+            md-input(v-model="makePassword" type="password" required)
+          p.red_text データ保存期間は1日です
       md-dialog-actions
         md-button.md-primary(@click="showDialog = false") CANCEL
         md-button.md-primary(@click="check") OK
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 import FirebaseApp from './../firebase/firebase.js'
 const db = FirebaseApp.database()
 export default {
   data: () => ({
     showDialog: false,
     makeError: false,
+    authError: false,
     joinError: false,
     makeRoomName: null,
+    authRoomName: null,
     joinRoomName: null,
-    validateMessage: null,
+    authPassword: null,
+    makePassword: null,
     flag: 'join'
   }),
   firebase: function () {
@@ -61,50 +78,100 @@ export default {
         'md-invalid': this.joinError
       }
     },
+    checkAuthEmpty () {
+      return {
+        'md-invalid': this.authError
+      }
+    },
     checkMakeEmpty () {
       return {
         'md-invalid': this.makeError
       }
     }
   },
+  created () {
+    this.changeAuth(null)
+  },
   methods: {
+    ...mapMutations([
+      'changeAuth'
+    ]),
     handleDialog () {
       this.flag = 'join'
       this.showDialog = true
     },
     joinValidate () {
       if (!this.joinRoomName) {
-        this.validateMessage = '入力してください'
         this.joinError = true
       } else {
         this.joinError = false
       }
     },
+    authValidate () {
+      if (!this.authRoomName) {
+        this.authError = true
+      } else {
+        this.authError = false
+      }
+    },
     makeValidate () {
       if (!this.makeRoomName) {
-        this.validateMessage = '入力してください'
         this.makeError = true
       } else {
         this.makeError = false
       }
     },
     check () {
-      if (this.flag === 'join' && this.joinRoomName) {
+      if (this.flag === 'join') {
         this.joinRoom()
       }
-      if (this.flag === 'make' && this.makeRoomName) {
+      if (this.flag === 'auth') {
+        this.authRoom()
+      }
+      if (this.flag === 'make') {
         this.makeRoom()
       }
     },
     joinRoom () {
       if (this.ref[this.joinRoomName]) {
+        this.changeAuth('normal')
         this.$router.push({ path: `Room/${this.joinRoomName}` })
       } else {
-        this.validateMessage = '存在しないルーム名です'
         this.joinError = true
       }
     },
+    authRoom () {
+      if (!this.ref[this.authRoomName]) {
+        this.authError = true
+        return
+      }
+      if (this.ref[this.authRoomName].password === this.authPassword) {
+        this.changeAuth('speaker')
+        this.$router.push({ path: `Room/${this.authRoomName}` })
+        return
+      }
+      this.authError = true
+    },
     makeRoom () {
+      if (!this.makeRoomName || !this.makePassword) {
+        this.makeError = true
+        return
+      }
+      if (this.ref[this.makeRoomName]) {
+        this.makeError = true
+        return
+      }
+      this.$firebaseRefs.ref.child(`${this.makeRoomName}/password`).transaction(currentValue => {
+        return this.makePassword
+      })
+      this.$firebaseRefs.ref.child(`${this.makeRoomName}/post`).push(`ルーム「${this.makeRoomName}」作成されました`)
+      this.$firebaseRefs.ref.child(`${this.makeRoomName}/good`).transaction(currentValue => {
+        return 0
+      })
+      this.$firebaseRefs.ref.child(`${this.makeRoomName}/stop`).transaction(currentValue => {
+        return 0
+      })
+      this.changeAuth('speaker')
       this.$router.push({ path: `Room/${this.makeRoomName}` })
     }
   }
