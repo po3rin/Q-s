@@ -11,14 +11,14 @@ exports.notification = functions.database.ref('room/{name}/stop').onWrite(event 
   const val = event.data.val()
   console.log(val)
   return request.post(
-    "https://hooks.slack.com/services/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",
+    "",
     {json: {text: `${event.params.name} change !!`}}
   )
 })
 
 // let payload = {
 //   form: {
-//       token: 'xoxp-306902433604-306268656416-306372728801-3a74a96eb93e225aebe3f7d29412fca6',
+//       token: '',
 //       channel: 'qs-notification',
 //       username: 'abctail30',
 //       attachments: JSON.stringify([
