@@ -134,7 +134,7 @@ export default {
     },
     joinRoom () {
       if (this.ref[this.joinRoomName]) {
-        this.changeAuth('normal')
+        this.changeAuth('listener')
         this.$router.push({ path: `Room/${this.joinRoomName}` })
       } else {
         this.joinError = true

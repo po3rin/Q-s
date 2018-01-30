@@ -22,9 +22,7 @@
             md-field
               label Post question!
               md-input(v-model="text")
-            md-button.md-raised.md-primary(@click="post") {{ status }}
-      .box_notice
-        p.notice_text 「待って！」がおされました。
+            md-button.md-raised.md-primary(@click="post") POST
       md-dialog(:md-active.sync="showDialog")
         md-dialog-title Q’s
           p アップロードするファイルを選択してください
@@ -34,6 +32,10 @@
         md-dialog-actions
           md-button.md-primary(@click="showDialog = false") CANCEL
           md-button.md-primary(@click="showDialog = false") OK
+      form(novalidate @submit.stop.prevent="showSnackbar = true")
+        md-snackbar(:md-position="position" :md-duration="duration", :md-active.sync="showSnackbar" md-persistent)
+          span 「待って！」ボタンが押されました。
+          md-button.md-primary(@click='showSnackbar = false') OK
 </template>
 <script>
 import { mapGetters } from 'vuex'
@@ -47,7 +49,10 @@ export default {
       file: null,
       hasMessages: false,
       showDialog: false,
-      roomName: this.$route.params.name
+      roomName: this.$route.params.name,
+      showSnackbar: false,
+      position: 'center',
+      duration: 3000
     }
   },
   computed: {
@@ -59,12 +64,17 @@ export default {
     return {
       ref: {
         source: db.ref(`room/${this.roomName}`),
-        asObject: true,
-        readyCallback: function () {
-          this.init()
-        }
+        asObject: true
       }
     }
+  },
+  mounted () {
+    this.$firebaseRefs.ref.child('post').on('value', () => {
+      setTimeout(this.scrollBottom, 10)
+    })
+    this.$firebaseRefs.ref.child('stop').on('value', () => {
+      this.showSnackbar = true
+    })
   },
   methods: {
     good: function () {
@@ -84,28 +94,6 @@ export default {
     scrollBottom: () => {
       const obj = document.getElementsByClassName('box_post_feed')[0]
       obj.scrollTop = obj.scrollHeight
-    },
-    showNotice: () => {
-      const obj = document.getElementsByClassName('box_notice')[0]
-      obj.style.opacity = 0.7
-    },
-    invisibleNotice: () => {
-      const obj = document.getElementsByClassName('box_notice')[0]
-      obj.style.opacity = 0
-    },
-    init: function () {
-      let flag = false
-      this.$firebaseRefs.ref.child('post').on('value', () => {
-        setTimeout(this.scrollBottom, 10)
-      })
-      this.$firebaseRefs.ref.child('stop').on('value', () => {
-        if (!flag) {
-          flag = true
-        } else {
-          this.showNotice()
-          setTimeout(this.invisibleNotice, 2000)
-        }
-      })
     }
   }
 }
@@ -129,7 +117,7 @@ export default {
   padding: 24px calc(6% + 72px);
 }
 .box_post_feed {
-  overflow: scroll;
+  overflow-y: scroll;
   height: calc(100vh - 240px);
 }
 .box_post_text {
