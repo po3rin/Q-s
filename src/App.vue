@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import ToolBar from './components/ToolBar.vue'
+import ToolBar from './components/ToolBar'
 export default {
   name: 'app',
   components: {
