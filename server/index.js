@@ -14,7 +14,7 @@ const server = app.listen(3000, () => {
   console.log('Express server listening on port %d in %s mode', server.address().port, app.settings.env)
 })
 
-app.get('/:message', (req, res) => {
+app.post('/:message', (req, res) => {
   let options = {
     url: process.env.END_POINT,
     form: `payload={"text": "${req.params.message}", "username": "Q-s","icon_emoji": ":ghost:", "channel": "#qs-notification"}`,

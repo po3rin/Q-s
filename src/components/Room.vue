@@ -38,6 +38,7 @@
           md-button.md-primary(@click='showSnackbar = false') OK
 </template>
 <script>
+import axios from 'axios'
 import { mapGetters } from 'vuex'
 import FirebaseApp from './../firebase/firebase.js'
 const db = FirebaseApp.database()
@@ -86,9 +87,11 @@ export default {
       this.$firebaseRefs.ref.child('stop').transaction(currentValue => {
         return (currentValue || 0) + 1
       })
+      axios.post(`****************/「待って！」が押されました`)
     },
     post: function () {
       this.$firebaseRefs.ref.child('post').push(this.text)
+      axios.post(`****************/${this.text}`)
       this.text = null
     },
     scrollBottom: () => {

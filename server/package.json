@@ -1,10 +1,11 @@
 {
-  "name": "server",
+  "name": "Q-s_SlackBot",
   "version": "1.0.0",
   "description": "slack post",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
   },
   "author": "",
   "license": "ISC",
