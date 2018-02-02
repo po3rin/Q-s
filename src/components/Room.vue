@@ -3,12 +3,15 @@
     main.container
       .box_button
         md-button.md-fab.md-primary(@click="good")
+          md-tooltip(md-direction="right" md-delay="300") いいね！
           md-icon thumb_up
         p {{ ref.good }}
         md-button.md-fab.md-accent(@click="stop")
+          md-tooltip(md-direction="right" md-delay="300") 待って！
           md-icon pan_tool
         p {{ ref.stop }}
-        md-button.md-fab.md-primary(@click="showDialog = true")
+        md-button.md-fab.md-primary(v-if="status == 'speaker'" @click="showDialog = true")
+          md-tooltip(md-direction="right" md-delay="300") ファイル共有
           md-icon description
       .box_post
         transition-group.md-triple-line.box_post_feed(name="list" tag="md-list")
@@ -27,33 +30,42 @@
         md-dialog-title Q’s
           p アップロードするファイルを選択してください
           md-field
-            label Single
-            md-file(v-model="file")
+            label ファイルを選択してください
+            md-file(v-model="beforeUpdateFile" type="file" @change="setfile($event)")
         md-dialog-actions
           md-button.md-primary(@click="showDialog = false") CANCEL
-          md-button.md-primary(@click="showDialog = false") OK
-      form(novalidate @submit.stop.prevent="showSnackbar = true")
-        md-snackbar(:md-position="position" :md-duration="duration", :md-active.sync="showSnackbar" md-persistent)
-          span 「待って！」ボタンが押されました。
-          md-button.md-primary(@click='showSnackbar = false') OK
+          md-button.md-primary(@click="upload") OK
+      md-snackbar(:md-position="position" :md-duration="duration" :md-active.sync="stopSnackbar")
+        span 「待って！」ボタンが押されました
+        md-button.md-primary(@click='stopSnackbar = false') OK
+      md-snackbar(:md-position="position" :md-duration="Infinity" :md-active.sync="fileSnackbar")
+        span {{ afterUpdateFile }} がアップされました
+        md-button.md-primary(@click='download') DOWNLOAD
+        md-button.md-accent(@click='fileSnackbar = false') CANCEL
 </template>
 <script>
 import axios from 'axios'
 import { mapGetters } from 'vuex'
 import FirebaseApp from './../firebase/firebase.js'
 const db = FirebaseApp.database()
+const storage = FirebaseApp.storage()
 export default {
   data () {
     return {
       required: null,
       text: null,
-      file: null,
+      beforeUpdateFile: null,
+      afterUpdateFile: null,
       hasMessages: false,
       showDialog: false,
       roomName: this.$route.params.name,
-      showSnackbar: false,
+      stopSnackbar: false,
+      fileSnackbar: false,
       position: 'center',
-      duration: 3000
+      duration: 3000,
+      flag: false,
+      getFile: null,
+      downloadURL: null
     }
   },
   computed: {
@@ -74,7 +86,11 @@ export default {
       setTimeout(this.scrollBottom, 10)
     })
     this.$firebaseRefs.ref.child('stop').on('value', () => {
-      this.showSnackbar = true
+      if (this.flag) {
+        this.stopSnackbar = true
+      } else {
+        this.flag = true
+      }
     })
   },
   methods: {
@@ -87,12 +103,29 @@ export default {
       this.$firebaseRefs.ref.child('stop').transaction(currentValue => {
         return (currentValue || 0) + 1
       })
-      axios.post(`****************/「待って！」が押されました`)
+      axios.post(`https://q-sslackbot-onvktkeouf.now.sh/「待って！」が押されました`)
     },
     post: function () {
       this.$firebaseRefs.ref.child('post').push(this.text)
-      axios.post(`****************/${this.text}`)
+      axios.post(`https://q-sslackbot-onvktkeouf.now.sh/${this.text}`)
       this.text = null
+    },
+    setfile: function (e) {
+      this.getFile = e.target.files[0]
+    },
+    upload: function () {
+      this.showDialog = false
+      const storageRef = storage.ref(this.getFile.name)
+      storageRef.put(this.getFile).then(result => {
+        this.afterUpdateFile = this.getFile.name
+        this.downloadURL = result.downloadURL
+        this.fileSnackbar = true
+      }).catch(err => console.log(err))
+    },
+    download: function () {
+      console.log(this.downloadURL)
+      axios.get(`${this.downloadURL}`)
+      this.fileSnackbar = false
     },
     scrollBottom: () => {
       const obj = document.getElementsByClassName('box_post_feed')[0]
