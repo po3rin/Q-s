@@ -63,7 +63,8 @@ export default {
       fileSnackbar: false,
       position: 'center',
       duration: 3000,
-      flag: false,
+      stopflag: false,
+      fileflag: false,
       getFile: null,
       downloadURL: null
     }
@@ -86,10 +87,18 @@ export default {
       setTimeout(this.scrollBottom, 10)
     })
     this.$firebaseRefs.ref.child('stop').on('value', () => {
-      if (this.flag) {
+      if (this.stopflag) {
         this.stopSnackbar = true
       } else {
-        this.flag = true
+        this.stopflag = true
+      }
+    })
+    this.$firebaseRefs.ref.child('fileName').on('value', snapshot => {
+      if (this.fileflag) {
+        this.fileSnackbar = true
+        this.afterUpdateFile = snapshot.val()
+      } else {
+        this.fileflag = true
       }
     })
   },
@@ -117,14 +126,16 @@ export default {
       this.showDialog = false
       const storageRef = storage.ref(this.getFile.name)
       storageRef.put(this.getFile).then(result => {
-        this.afterUpdateFile = this.getFile.name
-        this.downloadURL = result.downloadURL
-        this.fileSnackbar = true
+        this.$firebaseRefs.ref.child('fileName').transaction(currentValue => {
+          return this.beforeUpdateFile
+        })
       }).catch(err => console.log(err))
     },
     download: function () {
-      console.log(this.downloadURL)
-      axios.get(`${this.downloadURL}`)
+      var storageRef = storage.ref(`${this.afterUpdateFile}`)
+      storageRef.getDownloadURL().then(function (url) {
+        window.location.href = `${url}`
+      })
       this.fileSnackbar = false
     },
     scrollBottom: () => {
