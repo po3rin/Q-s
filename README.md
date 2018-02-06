@@ -1,14 +1,15 @@
 # Q's
 
 > Real Time Presentation  
-> Vue.js + Firebase + Node.js + SlackBot
+> Vue.js + Firebase + Node.js + SlackAPI
 
 ## Node.js Server Setup
-Please read server/README.md
+Please read ```server/README.md```
 
 ## Firebase Setup
 
 make new dirctory and firbase.js
+
 ```
 mkdir src/firebase && vi firebase.js
 ```
@@ -27,8 +28,6 @@ let config = {
 const FirebaseApp = Firebase.initializeApp(config)
 export default FirebaseApp
 ```
-
-
 
 ## Build Setup
 
