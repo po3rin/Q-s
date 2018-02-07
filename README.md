@@ -1,7 +1,12 @@
 # Q's
 
+## Overview
 > Real Time Presentation  
 > Vue.js + Firebase + Node.js + SlackAPI
+
+## Demo
+Deploy Firebase Hosting  
+https://realtimepresentation.firebaseapp.com/#/
 
 ## Node.js Server Setup
 Please read ```server/README.md```
