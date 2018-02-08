@@ -6,13 +6,18 @@
           md-tooltip(md-direction="right" md-delay="300") いいね！
           md-icon thumb_up
         p {{ ref.good }}
-        md-button.md-fab.md-accent(@click="stop")
+        md-button.md-fab.md-primary(@click="stop")
           md-tooltip(md-direction="right" md-delay="300") 待って！
           md-icon pan_tool
         p {{ ref.stop }}
         md-button.md-fab.md-primary(v-if="status == 'speaker'" @click="showDialog = true")
           md-tooltip(md-direction="right" md-delay="300") ファイル共有
           md-icon description
+        p(v-if="status == 'speaker'") File
+        md-button.md-fab.md-accent(@click="logout")
+          md-tooltip(md-direction="right" md-delay="300") 退出
+          md-icon subdirectory_arrow_left
+        p Logout
       .box_post
         transition-group.md-triple-line.box_post_feed(name="list" tag="md-list")
           md-list-item(v-for="post of ref.post" v-bind:key="post")
@@ -45,7 +50,7 @@
 </template>
 <script>
 import axios from 'axios'
-import { mapGetters } from 'vuex'
+import { mapMutations, mapGetters } from 'vuex'
 import FirebaseApp from './../firebase/firebase.js'
 const db = FirebaseApp.database()
 const storage = FirebaseApp.storage()
@@ -103,6 +108,9 @@ export default {
     })
   },
   methods: {
+    ...mapMutations([
+      'changeAuth'
+    ]),
     good: function () {
       this.$firebaseRefs.ref.child('good').transaction(currentValue => {
         return (currentValue || 0) + 1
@@ -137,6 +145,10 @@ export default {
         window.location.href = `${url}`
       })
       this.fileSnackbar = false
+    },
+    logout: function () {
+      this.$router.push({ name: `Start` })
+      this.changeAuth(null)
     },
     scrollBottom: () => {
       const obj = document.getElementsByClassName('box_post_feed')[0]

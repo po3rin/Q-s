@@ -1,10 +1,8 @@
 <template lang="pug">
   header
     md-toolbar
-      router-link(to="/")
-        img(src="../assets/seraWeb.svg")
-      router-link(to="/")
-        h1.md-title Q’s
+      img(src="../assets/seraWeb.svg")
+      h1.md-title Q’s
       .md-toolbar-section-end
         md-button.md-icon-button
           a(href="https://github.com/po3rin/Q-s")
@@ -13,15 +11,12 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 export default {
-  data () {
-    return {
-    }
-  },
   methods: {
-    greet: function () {
-      alert('Hello !')
-    }
+    ...mapMutations([
+      'changeAuth'
+    ])
   }
 }
 </script>

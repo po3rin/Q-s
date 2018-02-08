@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Start from '@/components/Start'
 import Room from '@/components/Room'
+import NotFound from '@/components/NotFound'
 import Store from '@/store/index.js'
 
 Vue.use(Router)
@@ -18,6 +19,14 @@ const router = new Router({
       name: 'Room',
       component: Room,
       meta: { requiresAuth: true }
+    },
+    {
+      path: '/404',
+      component: NotFound
+    },
+    {
+      path: '*',
+      redirect: '/404'
     }
   ]
 })
