@@ -173,7 +173,7 @@ export default {
 }
 .box_post {
   text-align: left;
-  padding: 24px calc(6% + 72px);
+  padding: 0 calc(6% + 72px);
 }
 .box_post_feed {
   overflow-y: scroll;
@@ -212,7 +212,7 @@ export default {
 }
 @media (max-width:480px) {
   .box_post {
-    padding: 24px 0 24px calc(6% + 50px);
+    padding: 0 0 0 calc(6% + 50px);
   }
   .box_post_text {
     font-size: .8rem;

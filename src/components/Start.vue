@@ -11,7 +11,8 @@
           md-button.md-raised.md-primary(@click="handleDialog")
             h3 はじめる
       .right_box
-        img.right_box_img(src="../assets/screenShot.png")
+        transition(name="slide-fade")
+          img.right_box_img(src="../assets/screenShot.png" v-if="showImg")
     md-dialog(:md-active.sync="showDialog")
       md-dialog-title Q’s
       md-tabs(md-alignment="centered")
@@ -31,17 +32,16 @@
           md-field(:class="checkAuthEmpty")
             label password
             md-input(v-model="authPassword" type="password" required)
-
-        md-tab(md-label="ルーム作成" @click="flag = 'make'" @change="makeValidate")
-          p 作成するルーム名を入れてください
-          md-field(:class="checkMakeEmpty")
-            label Room Name
-            md-input(v-model="makeRoomName" required)
-          p パスワードを入力してください
-          md-field(:class="checkMakeEmpty")
-            label password
-            md-input(v-model="makePassword" type="password" required)
-          p.red_text データ保存期間は1日です
+        //- md-tab(md-label="ルーム作成" @click="flag = 'make'" @change="makeValidate")
+        //-   p 作成するルーム名を入れてください
+        //-   md-field(:class="checkMakeEmpty")
+        //-     label Room Name
+        //-     md-input(v-model="makeRoomName" required)
+        //-   p パスワードを入力してください
+        //-   md-field(:class="checkMakeEmpty")
+        //-     label password
+        //-     md-input(v-model="makePassword" type="password" required)
+        //-   p.red_text データ保存期間は1日です
       md-dialog-actions
         md-button.md-primary(@click="showDialog = false") CANCEL
         md-button.md-primary(@click="check") OK
@@ -53,6 +53,7 @@ import FirebaseApp from './../firebase/firebase.js'
 const db = FirebaseApp.database()
 export default {
   data: () => ({
+    showImg: false,
     showDialog: false,
     makeError: false,
     authError: false,
@@ -88,6 +89,9 @@ export default {
         'md-invalid': this.makeError
       }
     }
+  },
+  mounted () {
+    this.showImg = true
   },
   methods: {
     ...mapMutations([
@@ -223,6 +227,13 @@ export default {
     color: #ff5252;
     display: block;
     padding: 24px 0;
+  }
+  .slide-fade-enter-active {
+  transition: all .7s ease;
+  }
+  .slide-fade-enter {
+    transform: translateX(24px);
+    opacity: 0;
   }
   @media (max-width: 1600px) {
     main {

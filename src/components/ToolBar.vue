@@ -5,7 +5,7 @@
       h1.md-title Q’s
       .md-toolbar-section-end
         md-button.md-icon-button
-          a(href="https://github.com/po3rin/Q-s")
+          a(href="https://github.com/po3rin/Q-s" target="_blank")
             md-icon
               img(src="./../assets/github.svg")
 </template>
