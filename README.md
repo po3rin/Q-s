@@ -16,7 +16,7 @@ Please read ```server/README.md```
 make new dirctory and firbase.js
 
 ```
-mkdir src/firebase && vi firebase.js
+mkdir src/firebase && vi src/firebase.js
 ```
 add config
 
