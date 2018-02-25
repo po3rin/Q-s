@@ -32,16 +32,16 @@
           md-field(:class="checkAuthEmpty")
             label password
             md-input(v-model="authPassword" type="password" required)
-        //- md-tab(md-label="ルーム作成" @click="flag = 'make'" @change="makeValidate")
-        //-   p 作成するルーム名を入れてください
-        //-   md-field(:class="checkMakeEmpty")
-        //-     label Room Name
-        //-     md-input(v-model="makeRoomName" required)
-        //-   p パスワードを入力してください
-        //-   md-field(:class="checkMakeEmpty")
-        //-     label password
-        //-     md-input(v-model="makePassword" type="password" required)
-        //-   p.red_text データ保存期間は1日です
+        md-tab(md-label="ルーム作成" @click="flag = 'make'" @change="makeValidate")
+          p 作成するルーム名を入れてください
+          md-field(:class="checkMakeEmpty")
+            label Room Name
+            md-input(v-model="makeRoomName" required)
+          p パスワードを入力してください
+          md-field(:class="checkMakeEmpty")
+            label password
+            md-input(v-model="makePassword" type="password" required)
+          p.red_text データ保存期間は1日です
       md-dialog-actions
         md-button.md-primary(@click="showDialog = false") CANCEL
         md-button.md-primary(@click="check") OK

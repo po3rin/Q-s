@@ -3,17 +3,25 @@
     main.container
       .box_button
         md-button.md-fab.md-primary(@click="good")
-          md-tooltip(md-direction="right" md-delay="300") いいね！
+          md-tooltip(md-direction="right" md-delay="300") わかりやすい！
           md-icon thumb_up
         p {{ ref.good }}
         md-button.md-fab.md-primary(@click="stop")
           md-tooltip(md-direction="right" md-delay="300") 待って！
           md-icon pan_tool
         p {{ ref.stop }}
-        md-button.md-fab.md-primary(v-if="status == 'speaker'" @click="showDialog = true")
+        md-button.md-fab.md-primary(v-if="status == 'speaker' && !ref.url" @click="slideDialog = true")
+          md-tooltip(md-direction="right" md-delay="300") スライドを共有
+          md-icon note_add
+        p(v-if="status == 'speaker' && !ref.url") Upload Slide
+        md-button.md-fab.md-primary(v-if="ref.url" @click="open")
+          md-tooltip(md-directio="right" md-delay="300") スライドを開く
+          md-icon note
+        p(v-if="ref.url") Open Slide
+        md-button.md-fab.md-primary(v-if="status == 'speaker'" @click="fileDialog = true")
           md-tooltip(md-direction="right" md-delay="300") ファイル共有
           md-icon description
-        p(v-if="status == 'speaker'") File
+        p(v-if="status == 'speaker'") Share File
         md-button.md-fab.md-accent(@click="logout")
           md-tooltip(md-direction="right" md-delay="300") 退出
           md-icon subdirectory_arrow_left
@@ -31,15 +39,24 @@
               label Post question!
               md-input(v-model="text")
             md-button.md-raised.md-primary(@click="post") POST
-      md-dialog(:md-active.sync="showDialog")
+      md-dialog(:md-active.sync="fileDialog")
         md-dialog-title Q’s
           p アップロードするファイルを選択してください
           md-field
             label ファイルを選択してください
             md-file(v-model="beforeUpdateFile" type="file" @change="setfile($event)")
         md-dialog-actions
-          md-button.md-primary(@click="showDialog = false") CANCEL
+          md-button.md-primary(@click="fileDialog = false") CANCEL
           md-button.md-primary(@click="upload") OK
+      md-dialog(:md-active.sync="slideDialog")
+        md-dialog-title Q’s
+          p アップロードするGooleSlideのURLを選択してください
+          md-field
+            label ファイルを選択してください
+            md-input(v-model="slideURL")
+        md-dialog-actions
+          md-button.md-primary(@click="slideDialog = false") CANCEL
+          md-button.md-primary(@click="addSlide") OK
       md-snackbar(:md-position="position" :md-duration="duration" :md-active.sync="stopSnackbar")
         span 「待って！」ボタンが押されました
         md-button.md-primary(@click='stopSnackbar = false') OK
@@ -62,7 +79,8 @@ export default {
       beforeUpdateFile: null,
       afterUpdateFile: null,
       hasMessages: false,
-      showDialog: false,
+      fileDialog: false,
+      slideDialog: false,
       roomName: this.$route.params.name,
       stopSnackbar: false,
       fileSnackbar: false,
@@ -71,7 +89,8 @@ export default {
       stopflag: false,
       fileflag: false,
       getFile: null,
-      downloadURL: null
+      downloadURL: null,
+      slideURL: null
     }
   },
   computed: {
@@ -127,11 +146,21 @@ export default {
       axios.post(`https://q-sslackbot-onvktkeouf.now.sh/${this.text}`)
       this.text = null
     },
+    open: function () {
+      window.open(this.ref.url)
+    },
     setfile: function (e) {
       this.getFile = e.target.files[0]
     },
+    addSlide: function () {
+      this.slideDialog = false
+      this.$firebaseRefs.ref.child('url').transaction(currentValue => {
+        return this.slideURL
+      })
+      this.slideURL = null
+    },
     upload: function () {
-      this.showDialog = false
+      this.fileDialog = false
       const storageRef = storage.ref(this.getFile.name)
       storageRef.put(this.getFile).then(result => {
         this.$firebaseRefs.ref.child('fileName').transaction(currentValue => {
@@ -169,7 +198,7 @@ export default {
   position: fixed;
   top: 10%;
   left: 3%;
-  padding: 64px 0;
+  padding: 32px 0;
 }
 .box_post {
   text-align: left;
