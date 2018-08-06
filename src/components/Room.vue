@@ -139,11 +139,11 @@ export default {
       this.$firebaseRefs.ref.child('stop').transaction(currentValue => {
         return (currentValue || 0) + 1
       })
-      axios.post(`https://q-sslackbot-onvktkeouf.now.sh/「待って！」が押されました`)
+      axios.post(`<env>/「待って！」が押されました`)
     },
     post: function () {
       this.$firebaseRefs.ref.child('post').push(this.text)
-      axios.post(`https://q-sslackbot-onvktkeouf.now.sh/${this.text}`)
+      axios.post(`<env>/${this.text}`)
       this.text = null
     },
     open: function () {
